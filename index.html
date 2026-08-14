@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ===================== LOGIN VIEW ===================== -->
+<div id="loginView" class="auth-view">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fa-solid fa-wallet"></i> Expense Tracker</div>
+    <h2>Welcome Back!</h2>
+    <p class="auth-sub">Login to continue tracking your expenses.</p>
+    <form id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" required placeholder="you@example.com">
+
+      <label for="loginPassword">Password</label>
+      <div class="password-wrap">
+        <input type="password" id="loginPassword" required placeholder="••••••••">
+        <i class="fa-solid fa-eye toggle-pass" data-target="loginPassword"></i>
+      </div>
+
+      <div class="auth-row">
+        <label class="checkbox-label"><input type="checkbox"> Remember me</label>
+        <a href="#" class="link-muted">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn-primary full">Login</button>
+    </form>
+    <p class="auth-switch">Don't have an account? <a href="#" id="goRegister">Sign up</a></p>
+  </div>
+</div>
+
+<!-- ===================== REGISTER VIEW ===================== -->
+<div id="registerView" class="auth-view hidden">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fa-solid fa-wallet"></i> Expense Tracker</div>
+    <h2>Start Tracking Today!</h2>
+    <p class="auth-sub">Create your account and manage your expenses effectively.</p>
+    <form id="registerForm">
+      <label for="regName">Full Name</label>
+      <input type="text" id="regName" required placeholder="Your name">
+
+      <label for="regEmail">Email</label>
+      <input type="email" id="regEmail" required placeholder="you@example.com">
+
+      <label for="regPassword">Password</label>
+      <input type="password" id="regPassword" required placeholder="••••••••">
+
+      <label for="regConfirm">Confirm Password</label>
+      <input type="password" id="regConfirm" required placeholder="••••••••">
+
+      <button type="submit" class="btn-primary full">Sign Up</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="#" id="goLogin">Login</a></p>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="appView" class="app-view hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><i class="fa-solid fa-wallet"></i> <span>Expense Tracker</span></div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboardPage"><i class="fa-solid fa-house"></i><span>Dashboard</span></button>
+      <button class="nav-item" data-page="addPage"><i class="fa-solid fa-circle-plus"></i><span>Add Expense</span></button>
+      <button class="nav-item" data-page="expensesPage"><i class="fa-solid fa-list"></i><span>Expenses</span></button>
+      <button class="nav-item" data-page="categoriesPage"><i class="fa-solid fa-tags"></i><span>Categories</span></button>
+      <button class="nav-item" data-page="reportsPage"><i class="fa-solid fa-chart-simple"></i><span>Reports</span></button>
+      <button class="nav-item" data-page="settingsPage"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
+      <button class="nav-item" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button id="hamburger" class="hamburger"><i class="fa-solid fa-bars"></i></button>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <button id="darkToggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+        <div class="avatar">S</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ============ DASHBOARD PAGE ============ -->
+      <section id="dashboardPage" class="page active">
+
+        <div class="cards-grid">
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-wallet"></i></div>
+            <div><div class="stat-label">Total Expenses</div>
+              <div class="stat-value">₹<span id="statTotal">0</span></div>
+              <div class="stat-sub">This Month</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-receipt"></i></div>
+            <div><div class="stat-label">Total Transactions</div>
+              <div class="stat-value" id="statCount">0</div>
+              <div class="stat-sub">This Month</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div><div class="stat-label">Highest Category</div>
+              <div class="stat-value" id="statTopCat">-</div>
+              <div class="stat-sub" id="statTopCatAmt">₹0</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-calendar-day"></i></div>
+            <div><div class="stat-label">Daily Average</div>
+              <div class="stat-value">₹<span id="statAvg">0</span></div>
+              <div class="stat-sub">Per Day</div></div>
+          </div>
+        </div>
+
+        <div class="mini-grid">
+          <div class="panel">
+            <div class="panel-title">This Month vs Last Month</div>
+            <div class="compare-row">
+              <div><div class="compare-amt" id="thisMonthAmt">₹0</div><div class="compare-label">This Month</div></div>
+              <div class="compare-vs">vs</div>
+              <div><div class="compare-amt" id="lastMonthAmt">₹0</div><div class="compare-label">Last Month</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Budget Overview</div>
+            <div class="budget-amt">₹<span id="budgetTotal">3000</span> <span class="budget-label">Monthly Budget</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="budgetProgress"></div></div>
+            <div class="budget-remaining" id="budgetRemaining">₹0 Left</div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Recent Activity</div>
+            <ul class="activity-list" id="activityList"></ul>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="panel">
+            <div class="panel-title">Expenses Over Time</div>
+            <canvas id="lineChart"></canvas>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Expenses by Category</div>
+            <canvas id="doughnutChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ADD EXPENSE PAGE ============ -->
+      <section id="addPage" class="page">
+        <div class="panel form-panel">
+          <div class="panel-title">Add New Expense</div>
+          <form id="expenseForm">
+            <label for="expName">Expense Name</label>
+            <input type="text" id="expName" placeholder="e.g. Coffee">
+            <span class="error-msg" id="err-expName"></span>
+
+            <label for="expAmount">Amount (₹)</label>
+            <input type="number" id="expAmount" placeholder="e.g. 150">
+            <span class="error-msg" id="err-expAmount"></span>
+
+            <label for="expDate">Date</label>
+            <input type="date" id="expDate">
+
+            <label for="expCategory">Category</label>
+            <select id="expCategory">
+              <option>Food</option><option>Shopping</option><option>Transport</option>
+              <option>Bills</option><option>Others</option>
+            </select>
+
+            <label for="expNotes">Notes (optional)</label>
+            <textarea id="expNotes" placeholder="Any extra notes..."></textarea>
+
+            <button type="submit" class="btn-primary full">Add Expense</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ EXPENSES PAGE ============ -->
+      <section id="expensesPage" class="page">
+        <div class="panel">
+          <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="Search expenses...">
+            <div class="filter-chips" id="filterChips">
+              <button class="chip active" data-cat="All">All</button>
+              <button class="chip" data-cat="Food">Food</button>
+              <button class="chip" data-cat="Shopping">Shopping</button>
+              <button class="chip" data-cat="Transport">Transport</button>
+              <button class="chip" data-cat="Bills">Bills</button>
+              <button class="chip" data-cat="Others">Others</button>
+            </div>
+            <select id="sortSelect">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="high">Amount High-Low</option>
+              <option value="low">Amount Low-High</option>
+            </select>
+          </div>
+
+          <div id="emptyState" class="empty-state hidden">
+            <i class="fa-solid fa-box-open"></i>
+            <p>No expenses found. Looks like you haven't added any expenses yet.</p>
+            <button class="btn-primary" id="emptyAddBtn">Add Your First Expense</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="expenseTable">
+              <thead><tr><th>Date</th><th>Expense</th><th>Category</th><th>Amount</th><th>Actions</th></tr></thead>
+              <tbody id="expenseTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </section>
+
+      <!-- ============ CATEGORIES PAGE ============ -->
+      <section id="categoriesPage" class="page">
+        <div class="panel">
+          <div class="panel-title-row">
+            <div class="panel-title">Categories</div>
+            <button class="btn-primary" id="addCategoryBtn"><i class="fa-solid fa-plus"></i> Add Category</button>
+          </div>
+          <div class="table-wrap">
+            <table id="categoryTable">
+              <thead><tr><th>Category</th><th>Expenses</th><th>Total Amount</th><th>Actions</th></tr></thead>
+              <tbody id="categoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ REPORTS PAGE ============ -->
+      <section id="reportsPage" class="page">
+        <div class="panel">
+          <div class="panel-title">Reports</div>
+          <div class="reports-actions">
+            <button class="btn-secondary" id="downloadCsvBtn"><i class="fa-solid fa-file-csv"></i> Download CSV</button>
+            <button class="btn-secondary" id="printBtn"><i class="fa-solid fa-print"></i> Print Report</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS PAGE ============ -->
+      <section id="settingsPage" class="page">
+        <div class="panel">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="profileTab">Profile</button>
+            <button class="tab-btn" data-tab="prefTab">Preferences</button>
+            <button class="tab-btn" data-tab="secTab">Security</button>
+          </div>
+
+          <div id="profileTab" class="tab-content active">
+            <label>Full Name</label><input type="text" value="Sinrath Nangi">
+            <label>Email</label><input type="email" value="sinrath@example.com">
+            <button class="btn-primary" id="saveProfileBtn">Save Changes</button>
+          </div>
+
+          <div id="prefTab" class="tab-content">
+            <label>Currency</label>
+            <select><option>INR (₹)</option><option>USD ($)</option></select>
+            <label>Language</label>
+            <select><option>English</option></select>
+            <button class="btn-primary" id="savePrefBtn">Save Changes</button>
+          </div>
+
+          <div id="secTab" class="tab-content">
+            <label>Current Password</label><input type="password">
+            <label>New Password</label><input type="password">
+            <button class="btn-primary" id="saveSecBtn">Update Password</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">Made with ❤️ by a Learner | Expense Tracker v1.0</footer>
+  </div>
+</div>
+
+<!-- ===================== EDIT MODAL ===================== -->
+<div id="editModal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header"><h3>Edit Expense</h3><button class="modal-close" id="editModalClose">&times;</button></div>
+    <form id="editForm">
+      <label>Expense Name</label><input type="text" id="editName">
+      <label>Amount</label><input type="number" id="editAmount">
+      <label>Date</label><input type="date" id="editDate">
+      <label>Category</label>
+      <select id="editCategory">
+        <option>Food</option><option>Shopping</option><option>Transport</option>
+        <option>Bills</option><option>Others</option>
+      </select>
+      <label>Notes</label><textarea id="editNotes"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="editCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== DELETE MODAL ===================== -->
+<div id="deleteModal" class="modal-overlay hidden">
+  <div class="modal small">
+    <div class="delete-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h3>Delete Expense</h3>
+    <p>Are you sure you want to delete this expense? This action cannot be undone.</p>
+    <div class="modal-actions center">
+      <button class="btn-secondary" id="deleteCancelBtn">Cancel</button>
+      <button class="btn-danger" id="deleteConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
